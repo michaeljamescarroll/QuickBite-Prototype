@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>QuickBite</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>QuickBite</h1>
+  <p class="tagline">Order your food, skip the queue</p>
 
-  <h2>Menu</h2>
-  <ul id="menu-list"></ul>
+  <section id="menu">
+    <h2>Menu</h2>
+    <ul id="menu-list"></ul>
+  </section>
 
   <script>
     // SCRUM-7 Browse the menu
@@ -24,16 +28,21 @@
 
     MENU_ITEMS.forEach(function (item) {
       const li = document.createElement("li");
-      li.textContent = item.name + " - €" + item.price.toFixed(2) + " ";
+      const name = document.createElement("span");
+      name.textContent = item.name;
+
+      const price = document.createElement("span");
+      price.className = "price";
+      price.textContent = "€" + item.price.toFixed(2);
 
       const btn = document.createElement("button");
       btn.textContent = "Add";
       btn.onclick = function () {
-        // hook for SCRUM-8 (cart)
+        // hook for SCRUM-8 ;)
         if (typeof addToCart === "function") addToCart(item);
       };
 
-      li.appendChild(btn);
+      li.append(name, price, btn);
       list.appendChild(li);
     });
   </script>
