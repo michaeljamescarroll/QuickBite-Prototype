@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QuickBite</title>
+</head>
+<body>
+  <h1>QuickBite</h1>
+
+  <h2>Menu</h2>
+  <ul id="menu-list"></ul>
+
+  <script>
+    // SCRUM-7 Browse the menu
+    const MENU_ITEMS = [
+      { id: 1, name: "Chicken wrap", price: 5.5 },
+      { id: 2, name: "Veggie burger", price: 6.5 },
+      { id: 3, name: "Pizza slice", price: 3.5 },
+      { id: 4, name: "Chips", price: 2.5 },
+      { id: 5, name: "Coffee", price: 2.2 }
+    ];
+
+    const list = document.getElementById("menu-list");
+
+    MENU_ITEMS.forEach(function (item) {
+      const li = document.createElement("li");
+      li.textContent = item.name + " - €" + item.price.toFixed(2) + " ";
+
+      const btn = document.createElement("button");
+      btn.textContent = "Add";
+      btn.onclick = function () {
+        // hook for SCRUM-8 (cart)
+        if (typeof addToCart === "function") addToCart(item);
+      };
+
+      li.appendChild(btn);
+      list.appendChild(li);
+    });
+  </script>
+</body>
+</html>
