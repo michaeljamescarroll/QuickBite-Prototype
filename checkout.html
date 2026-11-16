@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QuickBite - Checkout</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>QuickBite</h1>
+  <p class="tagline">Order your food, skip the queue</p>
+
+  <section id="checkout">
+    <h2>Checkout</h2>
+
+    <h3>Your Order</h3>
+    <ul id="order-list">
+      <li>
+        <span>Chicken wrap x1</span>
+        <span class="price">€5.50</span>
+      </li>
+      <li>
+        <span>Coffee x2</span>
+        <span class="price">€4.40</span>
+      </li>
+    </ul>
+
+    <h3 id="total">Total: €9.90</h3>
+
+    <form id="checkout-form">
+      <label for="student-name">Your name</label>
+      <input type="text" id="student-name" required>
+
+      <button type="submit">Place Order</button>
+    </form>
+
+    <p id="message"></p>
+  </section>
+
+  <script>
+    const form = document.getElementById("checkout-form");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const name = document.getElementById("student-name").value;
+
+      message.textContent = "Thank you " + name + "! Your order has been placed successfully.";
+      form.reset();
+    });
+  </script>
+</body>
+</html>
