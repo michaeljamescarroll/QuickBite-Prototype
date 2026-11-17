@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+  <meta charset="UTF-8">
+  <title>QuickBite - Order Confirmation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>QuickBite</h1>
+  <p class="tagline">Order your food, skip the queue</p>
+
+  <section id="confirmation">
+    <h2>Order Confirmed</h2>
+    <p id="thanks">Thank you! Your order has been placed.</p>
+    <p>Your order number is <span id="order-number"></span></p>
+
+    <h3>Your Order</h3>
+    <ul>
+      <li>
+        <span>Chicken wrap x1</span>
+        <span class="price">€5.50</span>
+      </li>
+      <li>
+        <span>Coffee x2</span>
+        <span class="price">€4.40</span>
+      </li>
+    </ul>
+
+    <h3>Total: €9.90</h3>
+
+    <p>We will let you know when your order is ready to collect.</p>
+
+    <a href="index.html">Back to menu</a>
+  </section>
+
+  <script>
+    const orderNumber = Math.floor(Math.random() * 1000) + 1;
+    document.getElementById("order-number").textContent = orderNumber;
+
+    const name = localStorage.getItem("name");
+
+    if (name) {
+      document.getElementById("thanks").textContent = "Thank you " + name + "! Your order has been placed.";
+    }
+  </script>
+</body>
+</html>
