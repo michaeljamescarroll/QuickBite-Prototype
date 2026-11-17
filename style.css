@@ -66,3 +66,16 @@ button {
 button:hover {
   background: #cf6d17;
 }
+
+
+#confirmation {
+  max-width: 420px;
+  margin: 0 auto;
+  background: #ffe680;
+  padding: 20px 24px;
+}
+
+#confirmation li {
+  border-radius: 0;
+}
+
