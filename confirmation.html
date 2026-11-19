@@ -1,47 +1,51 @@
+
 <!DOCTYPE html>
-<html lang="en-gb">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>QuickBite - Order Confirmation</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Order Confirmation - QuickBite</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>QuickBite</h1>
-  <p class="tagline">Order your food, skip the queue</p>
 
-  <section id="confirmation">
-    <h2>Order Confirmed</h2>
-    <p id="thanks">Thank you! Your order has been placed.</p>
-    <p>Your order number is <span id="order-number"></span></p>
+    <h1>Order Confirmation</h1>
 
-    <h3>Your Order</h3>
-    <ul>
-      <li>
-        <span>Chicken wrap x1</span>
-        <span class="price">€5.50</span>
-      </li>
-      <li>
-        <span>Coffee x2</span>
-        <span class="price">€4.40</span>
-      </li>
-    </ul>
+    <section id="confirmation">
+        <h2 id="thank-you"></h2>
+        <p id="order-number"></p>
 
-    <h3>Total: €9.90</h3>
+        <div id="order-items"></div>
+        <p id="total"></p>
 
-    <p>We will let you know when your order is ready to collect.</p>
+        <a href="index.html">Back to Menu</a>
+    </section>
 
-    <a href="index.html">Back to menu</a>
-  </section>
+    <script>
+        const name = localStorage.getItem("name") || "Customer";
+        const orderNumber = localStorage.getItem("quickbiteOrderNumber");
+        const cart = JSON.parse(localStorage.getItem("quickbiteCart")) || [];
+        const total = localStorage.getItem("quickbiteTotal") || "0.00";
 
-  <script>
-    const orderNumber = Math.floor(Math.random() * 1000) + 1;
-    document.getElementById("order-number").textContent = orderNumber;
+        document.getElementById("thank-you").textContent =
+            "Thank you, " + name + "!";
 
-    const name = localStorage.getItem("name");
+        document.getElementById("order-number").textContent =
+            "Your order number is: " + orderNumber;
 
-    if (name) {
-      document.getElementById("thanks").textContent = "Thank you " + name + "! Your order has been placed.";
-    }
-  </script>
+        const orderItems = document.getElementById("order-items");
+
+        for (const item of cart) {
+            const p = document.createElement("p");
+
+            p.textContent = item.name + " x " + item.quantity +
+                " - €" + (item.price * item.quantity).toFixed(2);
+
+            orderItems.appendChild(p);
+        }
+
+        document.getElementById("total").textContent =
+            "Total: €" + total;
+    </script>
+
 </body>
 </html>
