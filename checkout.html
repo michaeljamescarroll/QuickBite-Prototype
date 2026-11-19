@@ -1,53 +1,76 @@
+
 <!DOCTYPE html>
-<html lang="en-gb">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>QuickBite - Checkout</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Checkout - QuickBite</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>QuickBite</h1>
-  <p class="tagline">Order your food, skip the queue</p>
 
-  <section id="checkout">
-    <h2>Checkout</h2>
+    <h1>Checkout</h1>
 
-    <h3>Your Order</h3>
-    <ul id="order-list">
-      <li>
-        <span>Chicken wrap x1</span>
-        <span class="price">€5.50</span>
-      </li>
-      <li>
-        <span>Coffee x2</span>
-        <span class="price">€4.40</span>
-      </li>
-    </ul>
+    <section id="checkout">
+        <h2>Your Order</h2>
+        <div id="order-items"></div>
+        <p id="total"></p>
 
-    <h3 id="total">Total: €9.90</h3>
+        <h2>Customer Details</h2>
+        <form id="checkout-form">
+            <label for="name">Student Name:</label>
+            <input type="text" id="name" required>
 
-    <form id="checkout-form">
-      <label for="student-name">Your name</label>
-      <input type="text" id="student-name" required>
+            <button type="submit">Place Order</button>
+        </form>
+    </section>
 
-      <button type="submit">Place Order</button>
-    </form>
+    <script>
+        let cart = JSON.parse(localStorage.getItem("quickbiteCart")) || [];
 
-    <p id="message"></p>
-  </section>
+        const orderItems = document.getElementById("order-items");
+        const totalElement = document.getElementById("total");
 
-  <script>
-    const form = document.getElementById("checkout-form");
-    const message = document.getElementById("message");
+        let total = 0;
 
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
+        function showOrder() {
+            orderItems.innerHTML = "";
+            total = 0;
 
-      const name = document.getElementById("student-name").value;
+            for (const item of cart) {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
 
-      message.textContent = "Thank you " + name + "! Your order has been placed successfully.";
-      form.reset();
-    });
-  </script>
+                const p = document.createElement("p");
+                p.textContent = item.name + " x " + item.quantity +
+                    " - €" + itemTotal.toFixed(2);
+
+                orderItems.appendChild(p);
+            }
+
+            totalElement.textContent = "Total: €" + total.toFixed(2);
+        }
+
+        document.getElementById("checkout-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+
+            localStorage.setItem("name", name);
+            localStorage.setItem("quickbiteTotal", total.toFixed(2));
+
+            const orderNumber = Math.floor(Math.random() * 90000) + 10000;
+            localStorage.setItem("quickbiteOrderNumber", orderNumber);
+
+            window.location.href = "confirmation.html";
+        });
+
+        showOrder();
+    </script>
+
 </body>
 </html>
