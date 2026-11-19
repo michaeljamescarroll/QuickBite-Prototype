@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QuickBite Order Confirmation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>QuickBite</h1>
+  <p class="tagline">Order confirmation</p>
+
+  <nav>
+    <a href="index.html">Menu</a> |
+    <a href="cart.html">View Cart</a>
+  </nav>
+
+  <section id="confirmation">
+    <h2>Order Confirmed!</h2>
+    <p id="customer"></p>
+    <p id="order-status"></p>
+
+    <h3>Order Summary</h3>
+    <ul id="order-list"></ul>
+    <p id="order-total"></p>
+
+    <button onclick="backToMenu()">Back to Menu</button>
+  </section>
+
+  <script>
+    let order = JSON.parse(localStorage.getItem("quickbiteOrder"));
+
+    if (order) {
+      document.getElementById("customer").textContent =
+        "Thank you, " + order.name + "!";
+
+      document.getElementById("order-status").textContent =
+        "Order Status: " + order.status;
+
+      const list = document.getElementById("order-list");
+
+      order.items.forEach(function(item) {
+        const li = document.createElement("li");
+
+        li.textContent =
+          item.name + " x " + item.quantity +
+          " - €" + (item.price * item.quantity).toFixed(2);
+
+        list.appendChild(li);
+      });
+
+      document.getElementById("order-total").textContent =
+        "Total: €" + order.total.toFixed(2);
+    }
+
+    function backToMenu() {
+      window.location.href = "index.html";
+    }
+  </script>
+
+</body>
+</html>
