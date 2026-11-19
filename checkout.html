@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QuickBite Checkout</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>QuickBite</h1>
+  <p class="tagline">Complete your order</p>
+
+  <nav>
+    <a href="index.html">Menu</a> |
+    <a href="cart.html">View Cart</a>
+  </nav>
+
+  <section id="checkout">
+    <h2>Checkout</h2>
+
+    <form id="checkout-form">
+      <input type="text" id="customer-name" placeholder="Your Name" required>
+      <input type="text" id="student-id" placeholder="Student ID" required>
+      <button type="submit">Place Order</button>
+    </form>
+
+    <p id="checkout-total"></p>
+  </section>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem("quickbiteCart")) || [];
+
+    let total = 0;
+
+    cart.forEach(function(item) {
+      total += item.price * item.quantity;
+    });
+
+    document.getElementById("checkout-total").textContent =
+      "Order total: €" + total.toFixed(2);
+
+    document.getElementById("checkout-form").onsubmit = function(event) {
+      event.preventDefault();
+
+      const order = {
+        name: document.getElementById("customer-name").value,
+        studentId: document.getElementById("student-id").value,
+        items: cart,
+        total: total,
+        status: "Pending"
+      };
+
+      localStorage.setItem("quickbiteOrder", JSON.stringify(order));
+      window.location.href = "confirmation.html";
+    };
+  </script>
+
+</body>
+</html>
