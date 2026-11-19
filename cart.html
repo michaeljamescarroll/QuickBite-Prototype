@@ -1,128 +1,216 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QuickBite – Add to Cart</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 0; background: #f6f6f6; color: #222; }
-  header { background: #e85d04; color: white; padding: 16px 24px; font-size: 22px; font-weight: bold; }
-  main { display: flex; gap: 24px; padding: 24px; flex-wrap: wrap; }
-  section { background: white; border-radius: 8px; padding: 16px; flex: 1; min-width: 280px; }
-  h2 { margin-top: 0; }
-  .item { display: flex; justify-content: space-between; align-items: center;
-          padding: 10px 0; border-bottom: 1px solid #eee; }
-  .item:last-child { border-bottom: none; }
-  .price { color: #666; font-size: 14px; }
-  button { background: #e85d04; color: white; border: none; border-radius: 6px;
-           padding: 8px 14px; cursor: pointer; font-size: 14px; }
-  button:hover { background: #c94f02; }
-  .qty-btn { padding: 2px 10px; }
-  .total { font-size: 18px; font-weight: bold; margin-top: 12px; text-align: right; }
-  .empty { color: #999; font-style: italic; }
-</style>
+    <meta charset="UTF-8">
+    <title>QuickBite Cart</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        header {
+            background: #e67e22;
+            color: white;
+            padding: 15px;
+            margin: -30px -16px 20px;
+        }
+
+        header h1 {
+            color: white;
+        }
+
+        nav {
+            margin: 15px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        section {
+            background: #fff3d6;
+            padding: 20px;
+            border-radius: 12px;
+            width: 320px;
+        }
+
+        .menu-item, .cart-item {
+            background: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        .cart-item button {
+            margin: 3px;
+        }
+
+        #cart-total {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+    </style>
 </head>
 <body>
 
-<header>QuickBite ☕</header>
+    <header>
+        <h1>QuickBite ☕</h1>
+        <nav>
+            <a href="index.html">Menu</a>
+            <a href="cart.html">Cart</a>
+            <a href="checkout.html">Checkout</a>
+        </nav>
+    </header>
 
-<main>
-  <!-- MENU (teammate's "View the menu" story can replace this part) -->
-  <section>
-    <h2>Menu</h2>
-    <div id="menu"></div>
-  </section>
+    <main>
+        <section>
+            <h2>Menu</h2>
+            <div id="menu"></div>
+        </section>
 
-  <!-- CART (my story: SCRUM-8 Add items to the cart) -->
-  <section>
-    <h2>Your Cart</h2>
-    <div id="cart"></div>
-    <div class="total">Total: €<span id="total">0.00</span></div>
-  </section>
-</main>
+        <section>
+            <h2>Your Cart</h2>
+            <div id="cart"></div>
+            <p id="cart-total">Total: €0.00</p>
+            <button onclick="goToCheckout()">Checkout</button>
+        </section>
+    </main>
 
-<script>
-  // 1. The menu data – a simple list of items with a name and price
-  const menu = [
-    { id: 1, name: "Americano",       price: 2.80 },
-    { id: 2, name: "Latte",           price: 3.50 },
-    { id: 3, name: "Chicken Wrap",    price: 5.95 },
-    { id: 4, name: "Blueberry Muffin", price: 2.50 },
-    { id: 5, name: "Bottle of Water", price: 1.20 }
-  ];
+    <script>
+        const menu = [
+            { id: 1, name: "Chicken wrap", price: 5.5 },
+            { id: 2, name: "Veggie burger", price: 6.5 },
+            { id: 3, name: "Pizza slice", price: 3.5 },
+            { id: 4, name: "Chips", price: 2.5 },
+            { id: 5, name: "Coffee", price: 2.2 }
+        ];
 
-  // 2. The cart – starts empty. Each entry is { id, name, price, quantity }
-  let cart = [];
+        let cart = JSON.parse(localStorage.getItem("quickbiteCart")) || [];
 
-  // 3. Show the menu with an "Add" button for each item
-  function showMenu() {
-    let html = "";
-    for (const item of menu) {
-      html += `
-        <div class="item">
-          <div>${item.name}<br><span class="price">€${item.price.toFixed(2)}</span></div>
-          <button onclick="addToCart(${item.id})">Add</button>
-        </div>`;
-    }
-    document.getElementById("menu").innerHTML = html;
-  }
+        function saveCart() {
+            localStorage.setItem("quickbiteCart", JSON.stringify(cart));
+        }
 
-  // 4. ADD TO CART – the main feature.
-  //    If the item is already in the cart, increase the quantity.
-  //    If not, add it with quantity 1.
-  function addToCart(id) {
-    const existing = cart.find(c => c.id === id);
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      const item = menu.find(m => m.id === id);
-      cart.push({ id: item.id, name: item.name, price: item.price, quantity: 1 });
-    }
-    showCart();
-  }
+        function showMenu() {
+            const menuDiv = document.getElementById("menu");
+            menuDiv.innerHTML = "";
 
-  // 5. Remove one of an item (used by the "−" button)
-  function removeOne(id) {
-    const existing = cart.find(c => c.id === id);
-    existing.quantity -= 1;
-    if (existing.quantity === 0) {
-      cart = cart.filter(c => c.id !== id);
-    }
-    showCart();
-  }
+            menu.forEach(function(item) {
+                const div = document.createElement("div");
+                div.className = "menu-item";
 
-  // 6. Show the cart and update the total
-  function showCart() {
-    if (cart.length === 0) {
-      document.getElementById("cart").innerHTML = '<p class="empty">Your cart is empty.</p>';
-    } else {
-      let html = "";
-      for (const c of cart) {
-        html += `
-          <div class="item">
-            <div>${c.name}<br><span class="price">€${(c.price * c.quantity).toFixed(2)}</span></div>
-            <div>
-              <button class="qty-btn" onclick="removeOne(${c.id})">−</button>
-              <strong> ${c.quantity} </strong>
-              <button class="qty-btn" onclick="addToCart(${c.id})">+</button>
-            </div>
-          </div>`;
-      }
-      document.getElementById("cart").innerHTML = html;
-    }
+                div.innerHTML = item.name + " - €" + item.price.toFixed(2);
 
-    // Total = price × quantity for every item, added up
-    let total = 0;
-    for (const c of cart) {
-      total += c.price * c.quantity;
-    }
-    document.getElementById("total").textContent = total.toFixed(2);
-  }
+                const button = document.createElement("button");
+                button.textContent = "Add";
+                button.onclick = function() {
+                    addToCart(item.id);
+                };
 
-  // Run when the page loads
-  showMenu();
-  showCart();
-</script>
+                div.appendChild(button);
+                menuDiv.appendChild(div);
+            });
+        }
+
+        function addToCart(id) {
+            const item = menu.find(function(item) {
+                return item.id === id;
+            });
+
+            const existing = cart.find(function(cartItem) {
+                return cartItem.id === id;
+            });
+
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: 1
+                });
+            }
+
+            saveCart();
+            showCart();
+        }
+
+        function removeOne(id) {
+            const item = cart.find(function(cartItem) {
+                return cartItem.id === id;
+            });
+
+            if (item) {
+                item.quantity -= 1;
+
+                if (item.quantity <= 0) {
+                    cart = cart.filter(function(cartItem) {
+                        return cartItem.id !== id;
+                    });
+                }
+            }
+
+            saveCart();
+            showCart();
+        }
+
+        function showCart() {
+            const cartDiv = document.getElementById("cart");
+            cartDiv.innerHTML = "";
+
+            let total = 0;
+
+            cart.forEach(function(item) {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                const div = document.createElement("div");
+                div.className = "cart-item";
+
+                div.textContent = item.name + " x " + item.quantity +
+                    " - €" + itemTotal.toFixed(2);
+
+                const addButton = document.createElement("button");
+                addButton.textContent = "+";
+                addButton.onclick = function() {
+                    addToCart(item.id);
+                };
+
+                const removeButton = document.createElement("button");
+                removeButton.textContent = "-";
+                removeButton.onclick = function() {
+                    removeOne(item.id);
+                };
+
+                div.appendChild(addButton);
+                div.appendChild(removeButton);
+                cartDiv.appendChild(div);
+            });
+
+            document.getElementById("cart-total").textContent =
+                "Total: €" + total.toFixed(2);
+        }
+
+        function goToCheckout() {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+            } else {
+                window.location.href = "checkout.html";
+            }
+        }
+
+        showMenu();
+        showCart();
+    </script>
 
 </body>
 </html>
